@@ -1,8 +1,28 @@
-import 'package:face_recognition/home_screen.dart';
+import 'package:face_recognition/pages/face_analysis_page.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:logger/logger.dart';
+import 'home_screen.dart';
+import 'pages/recognition_screen.dart';
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize the logger
+  final logger = Logger();
+
+  // Firebase initialization inside try-catch block
+  try {
+    await Firebase.initializeApp();
+    logger
+        .i('Firebase initialized successfully'); // Use logger instead of print
+  } catch (e) {
+    // Log error if Firebase fails to initialize
+    logger
+        .e('Error initializing Firebase: $e'); // Use logger for error handling
+  }
+
+  runApp(const MyApp()); // Ensure const MyApp is used
 }
 
 class MyApp extends StatelessWidget {
@@ -22,7 +42,13 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const HomeScreen(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const HomeScreen(),
+        '/face_analysis': (context) => FaceAnalysisPage(faceScores: {}),
+        '/recommendations': (context) =>
+            const RecognitionScreen(), // Corrected to RecognitionScreen
+      },
     );
   }
 }

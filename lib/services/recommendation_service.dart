@@ -10,11 +10,13 @@ class RecommendationService {
   Future<List<String>> getRecommendations(
       String skinTone, String skinType) async {
     try {
+      // Create request body with skin tone and skin type
       var requestBody = jsonEncode({
         'skinTone': skinTone,
         'skinType': skinType,
       });
 
+      // Send the POST request to the API
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: {
@@ -24,35 +26,35 @@ class RecommendationService {
         body: requestBody,
       );
 
+      // Check for success response
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
 
         // Assume the API returns a list of recommended product names
         List<String> recommendedProducts = List<String>.from(data['products']);
 
-        // Optional: You can redirect to the main website if needed
+        // Optionally redirect to main website (optional, remove if not needed)
         await _redirectToShafn();
 
         return recommendedProducts;
       } else {
-        logger.e(
-            "Failed to load recommendations, status code: ${response.statusCode}");
-        throw Exception("Failed to load recommendations");
+        // Log error details
+        logger.e("Failed to load recommendations, status code: ${response.statusCode}");
+        throw Exception("Error ${response.statusCode}: Unable to load recommendations");
       }
     } catch (e) {
+      // Catch and log the error
       logger.e("Error occurred while fetching recommendations: $e");
-      return [];
+      return Future.error("Failed to fetch recommendations. Please try again.");
     }
   }
 
-  // Method to redirect to the main website
+  // Optional: Method to redirect to the main website
   Future<void> _redirectToShafn() async {
     final Uri url = Uri.parse('https://shafn.com');
 
     if (await canLaunchUrl(url)) {
-      await launchUrl(url,
-          mode: LaunchMode
-              .externalApplication); // Opens the browser and redirects to the given URL
+      await launchUrl(url, mode: LaunchMode.externalApplication);
     } else {
       logger.e('Could not launch $url');
     }

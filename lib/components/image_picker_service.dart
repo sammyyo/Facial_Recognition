@@ -1,52 +1,44 @@
-
-import 'dart:io';
 import 'dart:async';
+import 'dart:io';
 import 'dart:ui' as ui;
-// ignore: unused_import
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
 
 class ImagePickerService {
-  final ImagePicker imagePicker = ImagePicker();
   final FaceDetector faceDetector;
 
   ImagePickerService(this.faceDetector);
 
   Future<File?> pickImageFromCamera() async {
-    XFile? pickedFile = await imagePicker.pickImage(source: ImageSource.camera);
-    return pickedFile != null ? File(pickedFile.path) : null;
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
+    if (pickedFile == null) return null;
+    return File(pickedFile.path);
   }
 
-  Future<File?> pickImageFromGallery() async {
-    XFile? pickedFile =
-        await imagePicker.pickImage(source: ImageSource.gallery);
-    return pickedFile != null ? File(pickedFile.path) : null;
+  Future<img.Image?> decodeImage(File? imageFile) async {
+    if (imageFile == null) return null;
+    final imageBytes = await imageFile.readAsBytes();
+    return img.decodeImage(imageBytes);
   }
 
-  Future<img.Image?> decodeImage(File? file) async {
-    if (file == null) return null;
-    return img.decodeImage(file.readAsBytesSync());
-  }
-
-  Future<ui.Image?> convertToUiImage(img.Image image) async {
+  Future<ui.Image> convertToUiImage(img.Image decodedImage) async {
     final completer = Completer<ui.Image>();
     ui.decodeImageFromPixels(
-      image.getBytes(),
-      image.width,
-      image.height,
+      decodedImage.getBytes(),
+      decodedImage.width,
+      decodedImage.height,
       ui.PixelFormat.rgba8888,
-      (ui.Image img) {
-        completer.complete(img);
+      (uiImage) {
+        completer.complete(uiImage);
       },
     );
     return completer.future;
   }
 
-  Future<List<Face>> detectFaces(File? file) async {
-    if (file == null) return [];
-    InputImage inputImage = InputImage.fromFile(file);
+  Future<List<Face>> detectFaces(File? imageFile) async {
+    if (imageFile == null) return [];
+    final inputImage = InputImage.fromFile(imageFile);
     return await faceDetector.processImage(inputImage);
   }
 

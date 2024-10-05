@@ -1,11 +1,17 @@
 import 'dart:ui';
 
 class Recognition {
-  final String label;
-  final double confidence;
-  final Rect location;
-  final String skinTone; // Add this
-  final String skinType; // Add this
+  String label;
+  double confidence;
+  Rect location;
+  String skinTone;
+  String skinType;
+  double overall;
+  double potential;
+  double jawline;
+  double masculinity;
+  double skinQuality;
+  double cheekbones;
 
   Recognition({
     required this.label,
@@ -13,5 +19,11 @@ class Recognition {
     required this.location,
     required this.skinTone,
     required this.skinType,
+    required this.overall,
+    required this.potential,
+    required this.jawline,
+    required this.masculinity,
+    required this.skinQuality,
+    required this.cheekbones,
   });
 }

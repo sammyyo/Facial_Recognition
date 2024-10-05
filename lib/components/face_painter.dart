@@ -1,8 +1,9 @@
 import 'dart:ui' as ui;
+import 'package:face_recognition/ML/recognition.dart';
 import 'package:flutter/material.dart';
 // ignore: unused_import
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
-import 'package:face_recognition/ML/recognition.dart';
+
 
 class FacePainter extends CustomPainter {
   final List<Recognition> recognitions;

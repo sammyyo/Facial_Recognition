@@ -22,10 +22,20 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.android.application'
+apply plugin: 'io.flutter.plugin.firebase'
+apply plugin: 'io.flutter.plugin.firebase.crashlytics'
+apply plugin: 'io.flutter.plugin.firebase.analytics'
+apply plugin: 'io.flutter.plugin.firebase.messaging'
+apply plugin: 'io.flutter.plugin.firebase.app_distribution'
+
 android {
     namespace "com.example.face_recognition_with_images"
     compileSdkVersion 34
     ndkVersion flutter.ndkVersion
+    versionCode 1
+    versionName "1.0
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

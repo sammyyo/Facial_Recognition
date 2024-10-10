@@ -4,10 +4,10 @@
     <!-- Permissions should be placed directly under the <manifest> tag -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-feature android:name="android.hardware.camera" android:required="true"/>
 
     <application
         android:label="face_recognition_with_images"
-        android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
         <activity
@@ -20,8 +20,8 @@
             android:windowSoftInputMode="adjustResize">
 
             <meta-data
-              android:name="io.flutter.embedding.android.NormalTheme"
-              android:resource="@style/NormalTheme" />
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme" />
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,7 +29,6 @@
             </intent-filter>
         </activity>
 
-        <!-- Meta-data used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />

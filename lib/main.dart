@@ -1,6 +1,8 @@
-import 'package:face_recognition/pages/face_analysis_page.dart';
+import 'package:face_recognition/components/face_analysis_page.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'package:logger/logger.dart';
 import 'home_screen.dart';
 import 'pages/recognition_screen.dart';
@@ -11,18 +13,21 @@ Future<void> main() async {
   // Initialize the logger
   final logger = Logger();
 
-  // Firebase initialization inside try-catch block
+  // Firebase initialization with platform check
   try {
-    await Firebase.initializeApp();
-    logger
-        .i('Firebase initialized successfully'); // Use logger instead of print
+    if (defaultTargetPlatform != TargetPlatform.linux && !kIsWeb) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+      logger.i('Firebase initialized successfully');
+    } else {
+      logger.i('Firebase skipped on Linux or Web');
+    }
   } catch (e) {
-    // Log error if Firebase fails to initialize
-    logger
-        .e('Error initializing Firebase: $e'); // Use logger for error handling
+    logger.e('Error initializing Firebase: $e');
   }
 
-  runApp(const MyApp()); // Ensure const MyApp is used
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -31,7 +36,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false, // Hide debug banner
+      debugShowCheckedModeBanner: false,
       title: 'ShafN',
       theme: ThemeData(
         primaryColor: Colors.white,
@@ -46,8 +51,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const HomeScreen(),
         '/face_analysis': (context) => FaceAnalysisPage(faceScores: {}),
-        '/recommendations': (context) =>
-            const RecognitionScreen(), // Corrected to RecognitionScreen
+        '/recommendations': (context) => const RecognitionScreen(),
       },
     );
   }
